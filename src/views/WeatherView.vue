@@ -1,18 +1,51 @@
 <template>
-  <div class="search-view">
-    <DayCard v-for="day in days" :key="day.date" :icon="day.icon" :datetime="day.date" :temp="day.temp.day" />
+  <div class="weather-view">
+    <div class="left-section">
+      <BackButton />
+      <CurrentCard v-if="currentDay !== null"
+          :icon="currentDay.icon"
+          :datetime="currentDay.date"
+          :pressure="currentDay.pressure"
+          :wind="currentDay.wind"
+          :humidity="currentDay.humidity"
+          :day-temp="currentDay.temp.day"
+          :night-temp="currentDay.temp.night"
+      />
+    </div>
+    <div class="right-section">
+      <DayCard v-for="day in days"
+         :key="day.date"
+         :icon="day.icon"
+         :datetime="day.date"
+         :temp="day.temp.day"
+         :selected="currentDay === day"
+         @click="changeCurrentDay(day)"
+      />
+    </div>
   </div>
 </template>
 
 <script>
 
 import DayCard from "@/components/DayCard";
+import BackButton from "@/components/BackButton";
+import CurrentCard from "@/components/CurrentCard";
 export default {
   name: 'SearchView',
-  components: {DayCard},
+  components: {CurrentCard, BackButton, DayCard},
   data() {
     return {
-      days: []
+      days: [],
+      currentDay: null
+    }
+  },
+  methods: {
+    changeCurrentDay(day) {
+      if (this.currentDay === day) {
+        this.currentDay = this.days[0];
+      } else {
+        this.currentDay = day;
+      }
     }
   },
   mounted() {
@@ -20,7 +53,8 @@ export default {
       fetch(url)
           .then((response) => response.json())
           .then((responseJson) => {
-            this.days = this.days = responseJson;
+            this.days = responseJson;
+            this.currentDay = this.days[0];
           })
           .catch((error) =>{
             alert("An error has occurred while fetching weather for next 7 days");
@@ -31,19 +65,25 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.search-view {
+.weather-view {
   height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  justify-content: space-around;
+  flex-wrap: wrap;
 
-  h1 {
-    margin-top: 0;
-    font-size: 3rem;
-    background: -webkit-linear-gradient(#25C35E, #E7E9A0);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  .left-section {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    flex: 2;
+    padding: 2rem;
+  }
+  .right-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
 }
 </style>

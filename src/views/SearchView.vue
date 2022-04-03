@@ -50,6 +50,7 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  background-color: #134601;
 
   h1 {
     margin-top: 0;
