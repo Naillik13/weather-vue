@@ -49,7 +49,7 @@ export default {
     }
   },
   mounted() {
-      let url = 'http://localhost:3000/api/weather?lat=' + this.$route.query.lat + '&lon=' + this.$route.query.lon;
+      let url = process.env.VUE_APP_API_URL + '/api/weather?lat=' + this.$route.query.lat + '&lon=' + this.$route.query.lon;
       fetch(url)
           .then((response) => response.json())
           .then((responseJson) => {
